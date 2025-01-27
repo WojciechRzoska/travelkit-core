@@ -1,0 +1,12 @@
+model User {
+  id Int @id @default(autoincrement())
+  email String @unique
+  name String
+  password String
+  isActive Boolean @default(true)
+  trips Trip[]
+  TripMember TripMember[]
+  Expense Expense[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
