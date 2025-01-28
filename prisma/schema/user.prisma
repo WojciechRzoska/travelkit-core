@@ -3,6 +3,8 @@ model User {
   email String @unique
   name String
   password String
+  firstName String?
+  lastName String? 
   isActive Boolean @default(true)
   trips Trip[]
   TripMember TripMember[]
