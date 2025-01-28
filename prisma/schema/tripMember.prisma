@@ -1,0 +1,11 @@
+model TripMember {
+  id          Int      @id @default(autoincrement())
+  user_id     Int?     
+  user        User?    @relation(fields: [user_id], references: [id])
+  guest_id    Int?     
+  guest       Guest?   @relation(fields: [guest_id], references: [id])
+  trip_id     Int      
+  trip        Trip     @relation(fields: [trip_id], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
