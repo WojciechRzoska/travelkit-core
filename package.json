@@ -76,12 +76,12 @@
       "**/*.(t|j)s"
     ],
     "coverageDirectory": "../coverage",
-    "testEnvironment": "node",
-    "lint-staged": {
-      "src/**/*.{ts,js,json,md}": [
-        "eslint --fix",
-        "prettier --write"
-      ]
-    }
+    "testEnvironment": "node"
+  },
+  "lint-staged": {
+    "*.{js,ts,tsx,json,css,md}": [
+      "eslint --fix",
+      "prettier --write"
+    ]
   }
 }
