@@ -1,7 +1,7 @@
-import { Module } from '@nestjs/common';
-import { UserService } from './user.service';
-import { UserController } from './user.controller';
-import { PasswordService } from 'src/shared/modules/password/password.service';
+import { Module } from '@nestjs/common'
+import { UserService } from './user.service'
+import { UserController } from './user.controller'
+import { PasswordService } from '@shared/modules/password/password.service'
 
 @Module({
   controllers: [UserController],
