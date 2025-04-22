@@ -1,6 +1,7 @@
 import {
   IsEmail,
   IsNotEmpty,
+  IsOptional,
   IsString,
   IsStrongPassword,
   MinLength,
@@ -23,4 +24,8 @@ export class CreateUserDto {
 
   @IsString()
   lastName: string
+
+  @IsString()
+  @IsOptional()
+  currentHashedRefreshToken: string | null
 }

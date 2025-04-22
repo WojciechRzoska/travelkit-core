@@ -15,7 +15,7 @@ export class AuthGuard {
     const token = authorization?.split(' ')[1]
 
     if (!token) {
-      return new UnauthorizedException('Token not found')
+      throw new UnauthorizedException('Token not found')
     }
 
     try {

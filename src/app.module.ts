@@ -10,8 +10,6 @@ import { TripModule } from '@modules/trip/trip.module'
 import { AuthenticationController } from './modules/authentication/authentication.controller'
 import { AuthenticationModule } from './modules/authentication/authentication.module'
 import { AuthenticationService } from './modules/authentication/authentication.service'
-import { LocationModule } from './module/location/location.module'
-import { LocationModule } from './modules/location/location.module'
 
 @Module({
   imports: [
@@ -21,7 +19,6 @@ import { LocationModule } from './modules/location/location.module'
     AuthenticationModule,
     PasswordModule,
     TripModule,
-    LocationModule,
   ],
   controllers: [AuthenticationController],
   providers: [AuthenticationService],
