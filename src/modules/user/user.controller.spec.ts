@@ -10,6 +10,7 @@ const createUserDto = {
   password: 'Password123!',
   firstName: 'John',
   lastName: 'Doe',
+  currentHashedRefreshToken: '',
 }
 
 const expectedUser = {

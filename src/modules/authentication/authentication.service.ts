@@ -31,9 +31,7 @@ export class AuthenticationService {
       refreshToken,
     )
 
-    await this.userService.update(userId, {
-      currentHashedRefreshToken: hashedRefreshToken,
-    })
+    await this.userService.updateRefreshToken(userId, hashedRefreshToken)
 
     return {
       accessToken,
@@ -102,8 +100,6 @@ export class AuthenticationService {
   }
 
   async logout(userId: number) {
-    await this.userService.update(userId, {
-      currentHashedRefreshToken: null,
-    })
+    await this.userService.updateRefreshToken(userId, null)
   }
 }
