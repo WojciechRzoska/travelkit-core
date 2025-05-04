@@ -11,4 +11,5 @@ model User {
   Expense Expense[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  currentHashedRefreshToken String?
 }

@@ -3,11 +3,12 @@ model Trip {
   name        String
   startDate   DateTime
   endsDate    DateTime
-  user_id     Int           
-  user User @relation(fields: [user_id], references: [id])
+  userId     Int           
+  user User @relation(fields: [userId], references: [id])
   TripMember TripMember[]
   Expense Expense[]
   Location Location[]
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
+
 }

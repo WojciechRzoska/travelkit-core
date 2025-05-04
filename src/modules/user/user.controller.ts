@@ -23,7 +23,8 @@ export class UserController {
   @HttpCode(HttpStatus.CREATED)
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
-    return this.userService.create(createUserDto)
+    this.userService.create(createUserDto)
+    return
   }
 
   @HttpCode(HttpStatus.OK)
