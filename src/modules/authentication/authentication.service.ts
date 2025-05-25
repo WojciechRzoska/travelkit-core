@@ -1,8 +1,14 @@
 import { LoginDto } from '@modules/authentication/dto/login.dto'
+import { RequestPasswordResetDto } from '@modules/authentication/dto/request-password-reset.dto'
+import { ResetPasswordDto } from '@modules/authentication/dto/reset-password.dto'
 import { UserService } from '@modules/user/user.service'
-import { Injectable, UnauthorizedException } from '@nestjs/common'
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
-
+import { EmailService } from '@shared/modules/email/email.service'
 import { PasswordService } from '@shared/modules/password/password.service'
 import { isEmail } from 'class-validator'
 
@@ -12,6 +18,7 @@ export class AuthenticationService {
     private readonly userService: UserService,
     private readonly passwordService: PasswordService,
     private readonly jwtService: JwtService,
+    private readonly emailService: EmailService,
   ) {}
   private async generateTokensAndStoreRefresh(
     userId: number,
@@ -101,5 +108,29 @@ export class AuthenticationService {
 
   async logout(userId: number) {
     await this.userService.updateRefreshToken(userId, null)
+  }
+
+  async requestPasswordReset(dto: RequestPasswordResetDto) {
+    const user = await this.userService.findByEmail(dto.email)
+    if (!user) {
+      throw new BadRequestException('User not found')
+    }
+
+    const token = await this.userService.setPasswordResetToken(dto.email)
+
+    await this.emailService.sendPasswordResetEmail(dto.email, token)
+
+    return { message: 'Email z instrukcjami resetowania hasła został wysłany' }
+  }
+
+  async resetPassword(dto: ResetPasswordDto) {
+    const success = await this.userService.resetPassword(
+      dto.token,
+      dto.newPassword,
+    )
+    if (!success) {
+      throw new BadRequestException('Invalid or expired password reset token')
+    }
+    return { message: 'Password reset successfully' }
   }
 }

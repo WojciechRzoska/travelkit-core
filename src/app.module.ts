@@ -5,6 +5,7 @@ import { ConfigModule } from '@nestjs/config'
 import { PasswordModule } from '@shared/modules/password/password.module'
 import { UserModule } from 'src/modules/user/user.module'
 import { DatabaseModule } from 'src/shared/modules/database/database.module'
+import { EmailModule } from 'src/shared/modules/email/email.module'
 
 import { TripModule } from '@modules/trip/trip.module'
 import { AuthenticationController } from './modules/authentication/authentication.controller'
@@ -19,6 +20,7 @@ import { AuthenticationService } from './modules/authentication/authentication.s
     AuthenticationModule,
     PasswordModule,
     TripModule,
+    EmailModule,
   ],
   controllers: [AuthenticationController],
   providers: [AuthenticationService],

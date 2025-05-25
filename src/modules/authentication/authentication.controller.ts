@@ -1,6 +1,8 @@
 import { AuthenticationService } from '@modules/authentication/authentication.service'
 import { LoginDto } from '@modules/authentication/dto/login.dto'
 import { RefreshDto } from '@modules/authentication/dto/refresh.dto'
+import { RequestPasswordResetDto } from '@modules/authentication/dto/request-password-reset.dto'
+import { ResetPasswordDto } from '@modules/authentication/dto/reset-password.dto'
 import { PassportLocalGuard } from '@modules/authentication/guards/passportLocal.guard'
 import {
   Body,
@@ -35,5 +37,17 @@ export class AuthenticationController {
   @UseGuards(AuthGuard)
   refresh(@Body() { userId, refreshToken }: RefreshDto) {
     return this.authService.refresh(userId, refreshToken)
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Post('request-password-reset')
+  requestPasswordReset(@Body() dto: RequestPasswordResetDto) {
+    return this.authService.requestPasswordReset(dto)
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Post('reset-password')
+  resetPassword(@Body() dto: ResetPasswordDto) {
+    return this.authService.resetPassword(dto)
   }
 }

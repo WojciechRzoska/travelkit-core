@@ -6,6 +6,7 @@ import { Module } from '@nestjs/common'
 import { ConfigModule, ConfigService } from '@nestjs/config'
 import { JwtModule } from '@nestjs/jwt'
 import { PassportModule } from '@nestjs/passport'
+import { EmailModule } from '@shared/modules/email/email.module'
 import { PasswordModule } from '@shared/modules/password/password.module'
 
 @Module({
@@ -22,6 +23,7 @@ import { PasswordModule } from '@shared/modules/password/password.module'
       inject: [ConfigService],
     }),
     PassportModule,
+    EmailModule,
   ],
   controllers: [AuthenticationController],
   providers: [AuthenticationService, LocalStrategy],
