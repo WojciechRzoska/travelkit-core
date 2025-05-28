@@ -44,12 +44,11 @@ export class EmailService {
     const verificationUrl = `${process.env.FRONTEND_URL}/verify-email?token=${token}`
 
     await this.resend.emails.send({
-      from: 'TravelKit <noreply@travelkit.app>',
+      from:
+        this.configService.get<string>('EMAIL_FROM') || 'onboarding@resend.dev',
       to: email,
       subject: 'Weryfikacja adresu email',
       react: VerificationEmail({ verificationUrl }),
     })
-
-    console.log('Verification email sent to', email)
   }
 }

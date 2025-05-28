@@ -29,12 +29,14 @@ export class UserService {
           password: hashedPassword,
           isActive: false,
           ...restCreateUserDto,
-          emailVerificationTokens: {
-            create: {
-              token: verificationToken,
-              expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 godziny
-            },
-          },
+        },
+      })
+
+      await this.prismaService.emailVerificationToken.create({
+        data: {
+          token: verificationToken,
+          userId: user.id,
+          expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 godziny
         },
       })
 
