@@ -1,16 +1,12 @@
+import { TripModule } from '@modules/trip/trip.module'
 import { Module } from '@nestjs/common'
-
 import { ConfigModule } from '@nestjs/config'
-
 import { PasswordModule } from '@shared/modules/password/password.module'
+import { TokenModule } from '@shared/modules/token/token.module'
 import { UserModule } from 'src/modules/user/user.module'
 import { DatabaseModule } from 'src/shared/modules/database/database.module'
 import { EmailModule } from 'src/shared/modules/email/email.module'
-
-import { TripModule } from '@modules/trip/trip.module'
-import { AuthenticationController } from './modules/authentication/authentication.controller'
 import { AuthenticationModule } from './modules/authentication/authentication.module'
-import { AuthenticationService } from './modules/authentication/authentication.service'
 
 @Module({
   imports: [
@@ -21,8 +17,7 @@ import { AuthenticationService } from './modules/authentication/authentication.s
     PasswordModule,
     TripModule,
     EmailModule,
+    TokenModule,
   ],
-  controllers: [AuthenticationController],
-  providers: [AuthenticationService],
 })
 export class AppModule {}

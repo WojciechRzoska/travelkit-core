@@ -14,17 +14,20 @@ import {
 } from '@nestjs/common'
 import { CreateUserDto } from './dto/create-user.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
+import { EmailVerificationService } from './email-verification.service'
 import { UserService } from './user.service'
 
-@Controller('user')
+@Controller('users')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly emailVerificationService: EmailVerificationService,
+  ) {}
 
-  @HttpCode(HttpStatus.CREATED)
+  @HttpCode(HttpStatus.NO_CONTENT)
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
-    this.userService.create(createUserDto)
-    return
+    return this.userService.create(createUserDto)
   }
 
   @HttpCode(HttpStatus.OK)
@@ -55,5 +58,11 @@ export class UserController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.userService.remove(+id)
+  }
+
+  @Get('verify-email')
+  async verifyEmail(@Query('token') token: string) {
+    const success = await this.emailVerificationService.verifyEmail(token)
+    return { success }
   }
 }

@@ -1,34 +1,47 @@
 import { Injectable } from '@nestjs/common'
-import { JwtService } from '@nestjs/jwt'
-import { CreateUserDto } from './dto/create-user.dto'
-import { UpdateUserDto } from './dto/update-user.dto'
-
 import { PrismaService } from '@shared/modules/database/prisma.service'
 import { EmailService } from '@shared/modules/email/email.service'
 import { PasswordService } from '@shared/modules/password/password.service'
+import { TokenService } from '@shared/modules/token/token.service'
 import handlePrismaError from 'src/utils/handlePrismaError'
+import { CreateUserDto } from './dto/create-user.dto'
+import { UpdateUserDto } from './dto/update-user.dto'
 
 @Injectable()
 export class UserService {
   constructor(
     private readonly prismaService: PrismaService,
     private readonly passwordService: PasswordService,
-    private readonly jwtService: JwtService,
+    private readonly tokenService: TokenService,
     private readonly emailService: EmailService,
   ) {}
 
   async create(createUserDto: CreateUserDto) {
     const { password, ...restCreateUserDto } = createUserDto
     const hashedPassword = await this.passwordService.hashPassword(password)
+    const verificationToken = await this.tokenService.generateVerificationToken(
+      createUserDto.email,
+    )
 
     try {
       const user = await this.prismaService.user.create({
-        data: { password: hashedPassword, ...restCreateUserDto },
+        data: {
+          password: hashedPassword,
+          isActive: false,
+          ...restCreateUserDto,
+          emailVerificationTokens: {
+            create: {
+              token: verificationToken,
+              expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 godziny
+            },
+          },
+        },
       })
 
-      await this.emailService.sendWelcomeEmail(user.email)
-
-      return user
+      await this.emailService.sendVerificationEmail(
+        user.email,
+        verificationToken,
+      )
     } catch (error) {
       throw handlePrismaError(error)
     }
@@ -92,10 +105,7 @@ export class UserService {
       throw new Error('User not found')
     }
 
-    const token = await this.jwtService.signAsync(
-      { sub: user.id, email: user.email },
-      { expiresIn: '1h' },
-    )
+    const token = await this.tokenService.generateVerificationToken(email)
 
     const expiresAt = new Date(Date.now() + 3600000) // 1 godzina
 
@@ -146,7 +156,6 @@ export class UserService {
     return true
   }
 
-  // Dodatkowa metoda do czyszczenia starych tokenów (można używać w cronie)
   async cleanupOldPasswordResetTokens() {
     const now = new Date()
     await this.prismaService.passwordResetToken.deleteMany({

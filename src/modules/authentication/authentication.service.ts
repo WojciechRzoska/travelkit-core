@@ -7,9 +7,10 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common'
-import { JwtService } from '@nestjs/jwt'
+import { PrismaService } from '@shared/modules/database/prisma.service'
 import { EmailService } from '@shared/modules/email/email.service'
 import { PasswordService } from '@shared/modules/password/password.service'
+import { TokenService } from '@shared/modules/token/token.service'
 import { isEmail } from 'class-validator'
 
 @Injectable()
@@ -17,22 +18,19 @@ export class AuthenticationService {
   constructor(
     private readonly userService: UserService,
     private readonly passwordService: PasswordService,
-    private readonly jwtService: JwtService,
+    private readonly tokenService: TokenService,
     private readonly emailService: EmailService,
+    private readonly prismaService: PrismaService,
   ) {}
+
   private async generateTokensAndStoreRefresh(
     userId: number,
     username: string,
   ) {
     const payload = { sub: userId, username }
 
-    const accessToken = await this.jwtService.signAsync(payload, {
-      expiresIn: '1d',
-    })
-
-    const refreshToken = await this.jwtService.signAsync(payload, {
-      expiresIn: '7d',
-    })
+    const accessToken = await this.tokenService.generateAccessToken(payload)
+    const refreshToken = await this.tokenService.generateRefreshToken(payload)
 
     const hashedRefreshToken = await this.passwordService.hashPassword(
       refreshToken,
@@ -45,6 +43,7 @@ export class AuthenticationService {
       refreshToken,
     }
   }
+
   async validateUser(loginData: LoginDto) {
     const { identifier, password } = loginData
     const user = isEmail(identifier)
